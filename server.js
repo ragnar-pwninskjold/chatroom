@@ -11,6 +11,17 @@ var io = socket_io(server);
 userCount = 0;
 userList = [];
 
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 
 io.on('connection', function (socket) {
     console.log(io.sockets.server.eio.clientsCount);
@@ -29,6 +40,11 @@ io.on('connection', function (socket) {
         userCount--;
     	socket.broadcast.emit('disconnected', userCount);
         io.sockets.emit('uList', userList);
+    });
+
+    socket.on('private', function(data) {
+        var prvId = makeId();
+        var prv = io.of('/'+prvId);
     });
 
    socket.on('uName', function(name) {

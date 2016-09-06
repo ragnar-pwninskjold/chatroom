@@ -23,6 +23,14 @@ $(document).ready(function() {
         input.val('');
     });
 
+    $('#private-chat').on('keydown', function(event) {
+        if (event.keyCode != 13) {
+            return;
+        }
+        var recipient = $('#private-chat').val();
+        socket.emit('private', recipient);
+    });
+
     socket.on('message', addMessage);
     socket.on('disconnected', function(data) {
         addMessage("Someone has disconnected");
