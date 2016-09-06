@@ -13,10 +13,12 @@ userList = [];
 
 
 io.on('connection', function (socket) {
+    console.log(io.sockets.server.eio.clientsCount);
     
     clientId = socket.client.id;
     console.log('Client connected');
     userCount++;
+    console.log("first count" + userCount);
     io.sockets.emit('userCount', userCount);
 
     socket.on('message', function(message) {
@@ -34,6 +36,7 @@ io.on('connection', function (socket) {
     id = socket.client.id;
     temp = {id: id, name: name};
     userList.push(temp);
+    console.log(userList);
     //io.sockets.emit('This is where the users will go');
     io.sockets.emit('uList', userList);
    });

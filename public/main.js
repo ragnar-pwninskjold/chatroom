@@ -33,6 +33,10 @@ $(document).ready(function() {
     });
 
     socket.on('uList', function(data) {
+        var list = document.getElementById('list-list');
+        while(list.firstChild) {
+            list.removeChild(list.firstChild);
+        }
         for (var i = 0; i < data.length; i++) {
             $('#online-list ul').append('<li>'+data[i].name+'</li>');
         }
