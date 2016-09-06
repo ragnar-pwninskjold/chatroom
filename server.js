@@ -9,21 +9,35 @@ var server = http.Server(app);
 var io = socket_io(server);
 
 userCount = 0;
+userList = [];
+
 
 io.on('connection', function (socket) {
+    
+    clientId = socket.client.id;
     console.log('Client connected');
     userCount++;
+    io.sockets.emit('userCount', userCount);
 
     socket.on('message', function(message) {
-    	console.log('Received message:', message);
     	socket.broadcast.emit('message', message);
     });
 
     socket.on('disconnect', function(message) {
-    	console.log('Someone disconnected!:', message);
-    	socket.broadcast.emit('disconnected');
-    	userCount--;
+        userCount--;
+    	socket.broadcast.emit('disconnected', userCount);
+        io.sockets.emit('uList', userList);
     });
+
+   socket.on('uName', function(name) {
+   
+    id = socket.client.id;
+    temp = {id: id, name: name};
+    userList.push(temp);
+    //io.sockets.emit('This is where the users will go');
+    io.sockets.emit('uList', userList);
+   });
+   
 });
 
 server.listen(process.env.PORT || 8080);

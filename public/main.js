@@ -9,6 +9,8 @@ $(document).ready(function() {
 
     var name = prompt("Please enter a name you wish to use");
     $('#nick').append("Your current username is: " + name);
+    socket.emit('uName', name);
+
 
     input.on('keydown', function(event) {
         if (event.keyCode != 13) {
@@ -22,7 +24,17 @@ $(document).ready(function() {
     });
 
     socket.on('message', addMessage);
-    socket.on('disconnected', function() {
+    socket.on('disconnected', function(data) {
         addMessage("Someone has disconnected");
+        addMessage("The user count is: " + data);
+    });
+    socket.on('userCount', function(data) {
+        addMessage("The user count is: " + data);
+    });
+
+    socket.on('uList', function(data) {
+        for (var i = 0; i < data.length; i++) {
+            $('#online-list ul').append('<li>'+data[i].name+'</li>');
+        }
     });
 });
