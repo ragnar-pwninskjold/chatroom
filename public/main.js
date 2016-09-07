@@ -34,13 +34,12 @@ $(document).ready(function() {
     socket.on('message', addMessage);
     socket.on('disconnected', function(data) {
         addMessage("Someone has disconnected");
-        addMessage("The user count is: " + data);
-    });
-    socket.on('userCount', function(data) {
-        addMessage("The user count is: " + data);
-    });
+        updateUserList(data);
 
-    socket.on('uList', function(data) {
+    });
+   
+    var updateUserList = function(data) {
+        addMessage("The user count is: " + data.length);
         var list = document.getElementById('list-list');
         while(list.firstChild) {
             list.removeChild(list.firstChild);
@@ -48,5 +47,8 @@ $(document).ready(function() {
         for (var i = 0; i < data.length; i++) {
             $('#online-list ul').append('<li>'+data[i].name+'</li>');
         }
+    };
+    socket.on('uList', function(data) {
+        updateUserList(data);
     });
 });

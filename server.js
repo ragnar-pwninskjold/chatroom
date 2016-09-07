@@ -8,7 +8,6 @@ app.use(express.static('public'));
 var server = http.Server(app);
 var io = socket_io(server);
 
-userCount = 0;
 userList = [];
 
 function makeid()
@@ -28,18 +27,18 @@ io.on('connection', function (socket) {
     
     clientId = socket.client.id;
     console.log('Client connected');
-    userCount++;
-    console.log("first count" + userCount);
-    io.sockets.emit('userCount', userCount);
 
     socket.on('message', function(message) {
     	socket.broadcast.emit('message', message);
     });
 
     socket.on('disconnect', function(message) {
-        userCount--;
-    	socket.broadcast.emit('disconnected', userCount);
-        io.sockets.emit('uList', userList);
+        for (var i = 0; i < userList.length; i++) {
+            if (userList[i].name == socket.username) {
+                userList.splice(i, 1);
+            }
+        }
+    	socket.broadcast.emit('disconnected', userList);
     });
 
     socket.on('private', function(data) {
@@ -48,7 +47,7 @@ io.on('connection', function (socket) {
     });
 
    socket.on('uName', function(name) {
-   
+    socket.username = name;
     id = socket.client.id;
     temp = {id: id, name: name};
     userList.push(temp);
